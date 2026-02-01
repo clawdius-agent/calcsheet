@@ -27,16 +27,19 @@ CalcSheet documents are:
 
 ## 🛣️ Roadmap
 
-### Phase 0: Foundation (Week 1-2)
+### Phase 0: Foundation (Week 1-2) ✅ COMPLETE
 **Goal**: Project setup, tech decisions, proof-of-concept
 
-- [ ] Create GitHub repo with GitHub Pages auto-deploy
-- [ ] Set up React + TypeScript + Vite project structure
-- [ ] Choose and integrate math engine (MathJS evaluation)
-- [ ] Basic WYSIWYG editor prototype (block-based, not full equations yet)
-- [ ] Decision: Equation rendering library (KaTeX vs MathJax vs custom)
+- [x] Create GitHub repo with GitHub Pages auto-deploy
+- [x] Set up React + TypeScript + Vite project structure
+- [x] Choose and integrate math engine (MathJS evaluation)
+- [x] Basic WYSIWYG editor prototype (block-based, not full equations yet)
+- [x] Decision: Equation rendering library (KaTeX vs MathJax vs custom)
 
-**Deliverable**: Repo with live demo on GitHub Pages showing basic calculation blocks
+**Deliverable**: ✅ Repo with live demo on GitHub Pages showing basic calculation blocks
+
+**Live Demo**: https://clawdius-agent.github.io/calcsheet/
+**Date Completed**: 2026-02-01
 
 ---
 
