@@ -1,0 +1,86 @@
+import { useState, useEffect } from 'react';
+import type { MathBlock } from '../../types/document';
+import { useEditorStore } from '../../stores/editor';
+import { extractVariableName, removeAssignment } from '../../engine/mathjs/engine';
+import 'katex/dist/katex.min.css';
+
+interface MathBlockProps {
+  block: MathBlock;
+  isSelected: boolean;
+}
+
+export function MathBlockComponent({ block, isSelected }: MathBlockProps) {
+  const { updateBlock, selectBlock, document } = useEditorStore();
+  const [localExpression, setLocalExpression] = useState(block.expression);
+
+  // Update local state when block changes from outside
+  useEffect(() => {
+    setLocalExpression(block.expression);
+  }, [block.expression, block.id]);
+
+  const handleBlur = () => {
+    const varName = extractVariableName(localExpression);
+    updateBlock(block.id, { 
+      expression: localExpression,
+      variableName: varName || undefined,
+    });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleBlur();
+    }
+  };
+
+  // Find the result block for this math block
+  const resultBlock = document.blocks.find(
+    (b) => b.type === 'result' && 'forBlockId' in b && b.forBlockId === block.id
+  );
+
+  const displayExpression = () => {
+    if (!block.expression) return <span className="text-gray-400 italic">Click to add equation...</span>;
+    
+    const varName = block.variableName;
+    const expr = removeAssignment(block.expression);
+    
+    return (
+      <div className="flex items-center gap-4">
+        {varName && (
+          <span className="font-mono text-blue-700">{varName} =</span>
+        )}
+        <span className="font-mono text-gray-800">{expr || block.expression}</span>
+        {resultBlock && 'value' in resultBlock && (
+          <span className="font-mono text-green-700">
+            = {resultBlock.formatted}
+            {resultBlock.unit && <span className="text-gray-500 ml-1">{resultBlock.unit}</span>}
+          </span>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div
+      className={`py-3 px-4 rounded-lg transition-colors ${
+        isSelected ? 'bg-blue-50 ring-2 ring-blue-200' : 'hover:bg-gray-50'
+      }`}
+      onClick={() => selectBlock(block.id)}
+    >
+      {isSelected ? (
+        <input
+          type="text"
+          className="w-full bg-transparent outline-none font-mono text-gray-800"
+          value={localExpression}
+          onChange={(e) => setLocalExpression(e.target.value)}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          placeholder="e.g., x = 5 or y = x * 2"
+          autoFocus
+        />
+      ) : (
+        displayExpression()
+      )}
+    </div>
+  );
+}
