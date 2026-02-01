@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { CalcSheet, Block, MathBlock, TextBlock } from '../types/document';
-import { createEmptyDocument, recalculateDocument } from '../engine/mathjs/engine';
+import { recalculateDocument, createEmptyDocument } from '../engine/mathjs/engine';
 
 interface EditorState {
   document: CalcSheet;

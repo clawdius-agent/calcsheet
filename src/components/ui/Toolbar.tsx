@@ -1,8 +1,8 @@
-import { useEditorStore } from '../stores/editor';
+import { useEditorStore } from '../../stores/editor';
 import { FileDown, FileUp, Plus, Calculator } from 'lucide-react';
 
 export function Toolbar() {
-  const { addBlock, exportToFile, importFromFile, document } = useEditorStore();
+  const { addBlock, exportToFile, importFromFile } = useEditorStore();
 
   const handleExport = () => {
     const json = exportToFile();
@@ -19,7 +19,7 @@ export function Toolbar() {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.calcsheet,.json';
-    input.onchange = (e) => {
+    input.onchange = (e: Event) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
         const reader = new FileReader();

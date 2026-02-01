@@ -49,19 +49,3 @@ export interface ResultBlock extends BaseBlock {
   unit: string;
   formatted: string;
 }
-
-// Default empty document
-export const createEmptyDocument = (): CalcSheet => ({
-  version: "1.0",
-  blocks: [
-    { id: "block-1", type: "text", content: "# CalcSheet Demo" },
-    { id: "block-2", type: "math", expression: "x = 5", variableName: "x" },
-    { id: "block-3", type: "math", expression: "y = x * 2 + 3", variableName: "y" },
-  ],
-  variables: {},
-  settings: {
-    defaultUnitSystem: "SI",
-    decimalPlaces: 4,
-    angleUnit: "rad",
-  },
-});

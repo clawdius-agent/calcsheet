@@ -1,5 +1,5 @@
 import { create, all } from 'mathjs';
-import type { CalcSheet, Variable, MathBlock } from '../types/document';
+import type { CalcSheet, Variable } from '../../types/document';
 
 // Create a custom MathJS instance with units enabled
 const math = create(all, {
@@ -115,6 +115,22 @@ export function recalculateDocument(sheet: CalcSheet): CalcSheet {
     variables: newVariables,
   };
 }
+
+// Default empty document - moved from stores/editor.ts
+export const createEmptyDocument = (): CalcSheet => ({
+  version: "1.0",
+  blocks: [
+    { id: "block-1", type: "text", content: "# CalcSheet Demo" },
+    { id: "block-2", type: "math", expression: "x = 5", variableName: "x" },
+    { id: "block-3", type: "math", expression: "y = x * 2 + 3", variableName: "y" },
+  ],
+  variables: {},
+  settings: {
+    defaultUnitSystem: "SI",
+    decimalPlaces: 4,
+    angleUnit: "rad",
+  },
+});
 
 // Format a number with specified decimal places
 export function formatNumber(value: number, decimalPlaces: number): string {
