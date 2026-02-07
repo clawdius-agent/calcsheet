@@ -32,7 +32,7 @@ function BlockRenderer({ block, isSelected, error }: {
 }
 
 function App() {
-  const { document, selectedBlockId, selectBlock, setDocument, recalculate } = useEditorStore();
+  const { document, selectedBlockId, selectBlock, setDocument } = useEditorStore();
 
   // Initialize with working document on first load
   useEffect(() => {
@@ -40,11 +40,6 @@ function App() {
       setDocument(createWorkingDocument());
     }
   }, []);
-
-  // Recalculate when document changes
-  useEffect(() => {
-    recalculate();
-  }, [document.blocks]);
 
   return (
     <div className="min-h-screen bg-gray-100">
