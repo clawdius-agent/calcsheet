@@ -275,10 +275,11 @@ export function evaluateExpression(
     
     if (result && typeof result === 'object' && 'toNumber' in result) {
       const unitObj = result as math.Unit;
+      const rawUnit = unitObj.formatUnits ? unitObj.formatUnits() : '';
       return {
         success: true,
         value: unitObj.toNumber(),
-        unit: unitObj.formatUnits ? unitObj.formatUnits() : '',
+        unit: formatUnit(rawUnit),
       };
     }
     
@@ -359,6 +360,48 @@ export function recalculateDocument(sheet: CalcSheet): CalcSheet {
       blocks: sheet.blocks.filter(b => b.type !== 'result'),
     };
   }
+}
+
+// Format units in engineering notation (in in -> in², ft ft -> ft²)
+export function formatUnit(unitStr: string): string {
+  if (!unitStr) return '';
+  
+  // Remove parentheses
+  let cleaned = unitStr.replace(/^\(|\)$/g, '');
+  
+  // Split into individual units
+  const units = cleaned.split(/\s+/).filter(u => u);
+  
+  // Count occurrences of each base unit
+  const unitCounts = new Map<string, number>();
+  
+  for (const unit of units) {
+    // Check if it already has a power like m^2 or in^3
+    const powerMatch = unit.match(/^([a-zA-Z°]+)\^?(\d+)$/);
+    if (powerMatch) {
+      const base = powerMatch[1];
+      const power = parseInt(powerMatch[2], 10);
+      unitCounts.set(base, (unitCounts.get(base) || 0) + power);
+    } else {
+      unitCounts.set(unit, (unitCounts.get(unit) || 0) + 1);
+    }
+  }
+  
+  // Build formatted string with superscripts
+  const parts: string[] = [];
+  for (const [unit, count] of unitCounts) {
+    if (count === 1) {
+      parts.push(unit);
+    } else if (count === 2) {
+      parts.push(`${unit}²`);
+    } else if (count === 3) {
+      parts.push(`${unit}³`);
+    } else {
+      parts.push(`${unit}^${count}`);
+    }
+  }
+  
+  return parts.join(' ');
 }
 
 // Enhanced number formatting
