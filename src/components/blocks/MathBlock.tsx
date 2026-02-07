@@ -14,21 +14,11 @@ interface MathBlockProps {
 export function MathBlockComponent({ block, isSelected, error, errorType }: MathBlockProps) {
   const { updateBlock, selectBlock, document } = useEditorStore();
   const [localExpression, setLocalExpression] = useState(block.expression);
-  const [showError, setShowError] = useState(false);
 
   // Update local state when block changes from outside
   useEffect(() => {
     setLocalExpression(block.expression);
   }, [block.expression, block.id]);
-
-  // Show error temporarily when it changes
-  useEffect(() => {
-    if (error) {
-      setShowError(true);
-      const timer = setTimeout(() => setShowError(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
 
   const handleBlur = () => {
     const trimmed = localExpression.trim();
@@ -101,7 +91,7 @@ export function MathBlockComponent({ block, isSelected, error, errorType }: Math
             {resultBlock.unit && <span className="text-gray-500 ml-1">{resultBlock.unit}</span>}
           </span>
         )}
-        {error && showError && (
+        {error && (
           <div className={`text-sm ${getErrorColor()} bg-red-50 px-2 py-1 rounded flex items-center gap-1`}>
             <span>{getErrorIcon()}</span>
             <span>{error}</span>
