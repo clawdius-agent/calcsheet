@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { CalcSheet, Block, MathBlock, TextBlock } from '../types/document';
-import { recalculateDocument, createEmptyDocument } from '../engine/mathjs/engine';
+import { recalculateDocument, createWorkingDocument } from '../engine/mathjs/engine';
 
 interface EditorState {
   document: CalcSheet;
@@ -20,7 +20,7 @@ interface EditorState {
 }
 
 export const useEditorStore = create<EditorState>((set, get) => ({
-  document: createEmptyDocument(),
+  document: createWorkingDocument(),
   selectedBlockId: null,
 
   setDocument: (doc) => set({ document: doc }),
