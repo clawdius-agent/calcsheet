@@ -243,6 +243,36 @@ export function evaluateExpression(
     // Evaluate with MathJS
     let result = math.evaluate(parsed.expression, scope);
     
+    // Handle numeric results - check for Infinity and NaN
+    let numericValue: number | null = null;
+    
+    if (typeof result === 'number') {
+      numericValue = result;
+    } else if (result && typeof result === 'object' && 'toNumber' in result) {
+      numericValue = (result as math.Unit).toNumber();
+    }
+    
+    if (numericValue !== null) {
+      if (Number.isNaN(numericValue)) {
+        return {
+          success: false,
+          error: 'Result is not a number (NaN)',
+          errorType: 'math-error'
+        };
+      }
+      
+      if (!Number.isFinite(numericValue)) {
+        const errorMsg = numericValue > 0 
+          ? 'Division by zero (result is Infinity)' 
+          : 'Division by zero (result is -Infinity)';
+        return {
+          success: false,
+          error: errorMsg,
+          errorType: 'math-error'
+        };
+      }
+    }
+    
     // Apply unit conversion if needed
     if (parsed.hasUnitConversion && parsed.targetUnit) {
       if (result && typeof result === 'object' && 'to' in result) {
